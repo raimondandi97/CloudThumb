@@ -1,0 +1,15 @@
+# Python cache/compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+
+
+.idea
+
+**/.terraform
+**/terraform.tfstate
+**/terraform.tfstate.backup
+*.tfstate.*
