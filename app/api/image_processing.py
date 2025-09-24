@@ -1,7 +1,10 @@
+import json
+
 import boto3
 import uuid
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 
+from app.auth import get_current_user
 
 router = APIRouter()
 
@@ -27,5 +30,20 @@ async def create_user(file: UploadFile = File(...)):
     return {"success: file uploaded successfully"}
 
 @router.get("/analysis/{image_id}")
-async def get_image_analysis(image_id: str):
-    return {'message': 'Feature coming soon'}
+async def get_image_analysis(image_id: str, current_user: str = Depends(get_current_user)):
+    lambda_client = boto3.client("lambda", region_name="us-east-1")
+    payload = {"key": image_id}
+
+    response = lambda_client.invoke(
+        FunctionName="opencv_lambda",
+        InvocationType="RequestResponse",
+        Payload=json.dumps(payload)
+    )
+
+    result = json.loads(response["Payload"].read().decode("utf-8"))
+    if "error" in result:
+        if result["error"] == "Item not found":
+            raise HTTPException(status_code=404, detail="Item not found")
+        else:
+            raise HTTPException(status_code=400, detail=result["error"])
+    return result

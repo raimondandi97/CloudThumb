@@ -60,5 +60,6 @@ resource "aws_lambda_function" "opencv_lambda" {
   function_name = "opencv_lambda"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = ""
+  timeout       = 30
+  image_uri     = "434807865986.dkr.ecr.us-east-1.amazonaws.com/cloudthumb-lambda-repo:latest"
 }
