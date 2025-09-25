@@ -9,7 +9,7 @@ from app.auth import get_current_user
 router = APIRouter()
 
 @router.post("/upload")
-async def create_user(file: UploadFile = File(...)):
+async def create_user(file: UploadFile = File(...), _: str = Depends(get_current_user)):
     s3_client = boto3.client("s3")
     dynamodb = boto3.client('dynamodb')
     file_content = await file.read()
@@ -30,7 +30,7 @@ async def create_user(file: UploadFile = File(...)):
     return {"success: file uploaded successfully"}
 
 @router.get("/analysis/{image_id}")
-async def get_image_analysis(image_id: str, current_user: str = Depends(get_current_user)):
+async def get_image_analysis(image_id: str, _: str = Depends(get_current_user)):
     lambda_client = boto3.client("lambda", region_name="us-east-1")
     payload = {"key": image_id}
 
