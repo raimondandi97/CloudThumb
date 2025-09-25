@@ -29,7 +29,7 @@ def lambda_handler(event, *_):
 
         if len(image.shape) == 3:
             if np.array_equal(image[:, :, 0], image[:, :, 1])\
-                and np.array_equal(image[:, :, 2], image[:, :, 2]):
+                and np.array_equal(image[:, :, 1], image[:, :, 2]):
                 image_color = "Greyscale"
 
         nr_white_pixels = np.all(image == 255, axis=-1)
